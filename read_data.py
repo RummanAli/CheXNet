@@ -4,6 +4,7 @@
 Read images and corresponding labels.
 """
 
+from tkinter import image_names
 import torch
 from torch.utils.data import Dataset
 from PIL import Image
@@ -48,7 +49,7 @@ class ChestXrayDataSet(Dataset):
         label = self.labels[index]
         if self.transform is not None:
             image = self.transform(image)
-        return image, torch.FloatTensor(label)
+        return image, torch.FloatTensor(label),image_names[:-25]
 
     def __len__(self):
         return len(self.image_names)

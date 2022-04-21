@@ -23,7 +23,7 @@ CLASS_NAMES = [ 'Atelectasis', 'Cardiomegaly', 'Effusion', 'Infiltration', 'Mass
                 'Pneumothorax', 'Consolidation', 'Edema', 'Emphysema', 'Fibrosis', 'Pleural_Thickening', 'Hernia']
 DATA_DIR = './ChestX-ray14/images'
 TEST_IMAGE_LIST = './ChestX-ray14/labels/test_list.txt'
-BATCH_SIZE = 64
+BATCH_SIZE = 4
 
 
 def main():
@@ -67,12 +67,15 @@ def main():
     # switch to evaluate mode
     model.eval()
 
-    for i, (inp, target) in enumerate(test_loader):
+    for i, (inp, target,image) in enumerate(test_loader):
         target = target.cuda()
         gt = torch.cat((gt, target), 0)
         bs, n_crops, c, h, w = inp.size()
         input_var = torch.autograd.Variable(inp.view(-1, c, h, w).cuda(), volatile=True)
+        print(bs,n_crops)
         output = model(input_var)
+        print(image)
+        print(output.shape)
         output_mean = output.view(bs, n_crops, -1).mean(1)
         pred = torch.cat((pred, output_mean.data), 0)
 
